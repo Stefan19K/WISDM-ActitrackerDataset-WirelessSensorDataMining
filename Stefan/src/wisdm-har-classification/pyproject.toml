@@ -1,0 +1,57 @@
+# =====================================================================
+# For a full TOML configuration guide, check the Flower docs:
+# https://flower.ai/docs/framework/how-to-configure-pyproject-toml.html
+# =====================================================================
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wisdm-har-classification"
+version = "1.0.0"
+description = ""
+license = "Apache-2.0"
+# Dependencies for your Flower App
+dependencies = [
+    "flwr[simulation]>=1.23.0",
+    "flwr-datasets[vision]>=0.5.0",
+    "torch==2.7.1",
+    "torchvision==0.22.1",
+    "scikit-learn>=1.3.0",
+    "imblearn",
+    "matplotlib",
+    "seaborn",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.flwr.app]
+publisher = "stefan"
+
+# Point to your ServerApp and ClientApp objects
+# Format: "<module>:<object>"
+[tool.flwr.app.components]
+serverapp = "wisdm_har_classification.server_app:app"
+clientapp = "wisdm_har_classification.client_app:app"
+
+# Custom config values accessible via `context.run_config`
+[tool.flwr.app.config]
+num-server-rounds = 50
+fraction-fit = 0.5
+local-epochs = 5
+
+# Default federation to use when running the app
+[tool.flwr.federations]
+default = "local-simulation"
+
+# Local simulation federation with 4 virtual SuperNodes
+[tool.flwr.federations.local-simulation]
+options.num-supernodes = 3
+
+# Remote federation example for use with SuperLink
+[tool.flwr.federations.remote-federation]
+address = "<SUPERLINK-ADDRESS>:<PORT>"
+insecure = true  # Remove this line to enable TLS
+# root-certificates = "<PATH/TO/ca.crt>"  # For TLS setup

@@ -1,0 +1,25 @@
+# --- Python Standard ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environments ---
+.venv
+venv/
+env/
+ENV/
+
+# --- Editor Settings ---
+.zed
+.vscode/
+.idea/
+.DS_Store
+
+# --- Project Specific (Generated Data & Plots) ---
+# It is best practice to ignore large datasets and outputs
+workdir/
+
+# --- User Requested ---
+# WARNING: ignoring __init__.py breaks python packaging.
+# Only keep this line if you are 100% sure you don't need them in the repo.
+__init__.py
