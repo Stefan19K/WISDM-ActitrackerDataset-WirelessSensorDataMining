@@ -1,0 +1,69 @@
+# =====================================================================
+# Federated Learning with Differential Privacy - Flower App
+# =====================================================================
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wisdm-har-dp"
+version = "1.0.0"
+description = "Federated Learning with Differential Privacy for Human Activity Recognition"
+license = "Apache-2.0"
+dependencies = [
+    "flwr[simulation]>=1.23.0",
+    "flwr-datasets[vision]>=0.5.0",
+    "torch==2.7.1",
+    "torchvision==0.22.1",
+    "scikit-learn>=1.3.0",
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "imblearn",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["wisdm_har_dp"]
+
+[tool.flwr.app]
+publisher = "ioana"
+
+[tool.flwr.app.components]
+serverapp = "wisdm_har_dp.server_app:app"
+clientapp = "wisdm_har_dp.client_app:app"
+
+[tool.flwr.app.config]
+# Federated settings
+num-server-rounds = 20
+fraction-fit = 1.0
+fraction-evaluate = 1.0
+
+# Model settings
+model-type = "cnn"
+hidden-size = 64
+
+# Training settings
+batch-size = 64  # 32  # larger batch helps DP-SGD
+local-epochs = 2  # 3  # fewer local epochs reduces overfitting
+learning-rate = 0.0005
+
+# Loss function
+use-focal-loss = false
+
+# Differential Privacy settings
+enable-dp = true
+target-epsilon = 8.0
+target-delta = 1e-5
+max-grad-norm = 1.0
+noise-multiplier = 0.3  # 0.5
+
+# Data settings
+dataset-path = "WISDM_ar_v1.1/client_B.csv"
+
+[tool.flwr.federations]
+default = "local-simulation"
+
+[tool.flwr.federations.local-simulation]
+options.num-supernodes = 3
